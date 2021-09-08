@@ -75,4 +75,16 @@ class TestParseStartingDigits(unittest.TestCase):
     def test_number_range_with_similar_digits(self):
         num_string = "1003-1075"
         regex_string = card_validator.parse_starting_digits(num_string)
-        self.assertEqual(regex_string, "(10(0[3-9]|[1-6][0-9]{1}|7[0-5]))")
+        self.assertEqual(regex_string, "(10(0[3-9]|[1-6][0-9]{1}|7[0-5]))")    def test_single_number(self):
+        num_string = "16"
+        starting_digit_length = 5
+        regex_string = card_validator.get_number_length(num_string, starting_digit_length)
+        self.assertEqual(regex_string, r"\d{11}")
+    
+    def test_two_numbers(self):
+        num_string = "16,19"
+        starting_digit_length = 5
+        regex_string = card_validator.get_number_length(num_string, starting_digit_length)
+        self.assertEqual(regex_string, r"\d{11}(\d{3})?")
+
+TestParseStartingDigits().test_number_range_no_similar_digits()
