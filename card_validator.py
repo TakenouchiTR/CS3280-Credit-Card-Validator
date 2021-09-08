@@ -80,6 +80,23 @@ def parse_starting_digits(data):
             result[starting_digit_length] += str(data_item)
     
     return result
+        
+def get_number_length(data, starting_digit_length):
+    result = ""
+    data_sections = data.split(",")
+
+    for i in range(len(data_sections)):
+        length = int(data_sections[i])
+        if i == 0:
+            result += r"\d"
+            result += "{{{}}}".format(length - starting_digit_length)
+        else:
+            result += r"(\d"
+            prev_length = int(data_sections[i - 1])
+            result += "{{{}}})?".format(length - prev_length)
+
+    return result
+
 def load_file(file_path):
     result = []
 
