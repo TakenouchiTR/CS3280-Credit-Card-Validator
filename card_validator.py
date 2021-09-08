@@ -1,6 +1,5 @@
 import csv
 import re
-import os
 
 def create_number_range(min, max):
     result = "^"
