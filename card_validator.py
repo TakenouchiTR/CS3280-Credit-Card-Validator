@@ -16,8 +16,9 @@ def create_number_range(min, max):
     while min_str[prefix_len] == max_str[prefix_len]:
         prefix_len += 1
     
-    result += min_str[:prefix_len]
-    result += "("
+    if prefix_len > 0:
+        result += min_str[:prefix_len]
+        result += "("
 
     for i in reversed(range(prefix_len, len(min_str))):
         num_search = ""
@@ -48,7 +49,8 @@ def create_number_range(min, max):
             num_search += "[0-9]{{{}}}".format(len(max_str) - i - 1)
             result += num_search
 
-    result += ")"
+    if prefix_len > 0:
+        result += ")"
 
     return result
 
