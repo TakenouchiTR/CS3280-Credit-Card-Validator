@@ -2,7 +2,7 @@ import csv
 import re
 
 def create_number_range(min, max):
-    result = "^"
+    result = ""
 
     if min > max:
         min, max = max, min
