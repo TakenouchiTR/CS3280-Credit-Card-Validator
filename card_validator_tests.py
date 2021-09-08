@@ -60,22 +60,30 @@ class TestParseStartingDigits(unittest.TestCase):
     def test_single_number(self):
         num_string = "32"
         regex_string = card_validator.parse_starting_digits(num_string)
-        self.assertEqual(regex_string, "32")
+        self.assertEqual(regex_string, {2: "32"})
     
     def test_two_numbers(self):
         num_string = "32,35"
         regex_string = card_validator.parse_starting_digits(num_string)
-        self.assertEqual(regex_string, "32|35")
+        self.assertEqual(regex_string, {2: "32|35"})
     
     def test_number_range_no_similar_digits(self):
         num_string = "1003-2375"
         regex_string = card_validator.parse_starting_digits(num_string)
-        self.assertEqual(regex_string, "(100[3-9]|10[1-9][0-9]{1}|1[1-9][0-9]{2}|2[0-2][0-9]{2}|23[0-6][0-9]{1}|237[0-5])")
+        self.assertEqual(regex_string, {4: "(100[3-9]|10[1-9][0-9]{1}|1[1-9][0-9]{2}|2[0-2][0-9]{2}|23[0-6][0-9]{1}|237[0-5])"})
     
     def test_number_range_with_similar_digits(self):
         num_string = "1003-1075"
         regex_string = card_validator.parse_starting_digits(num_string)
-        self.assertEqual(regex_string, "(10(0[3-9]|[1-6][0-9]{1}|7[0-5]))")    def test_single_number(self):
+        self.assertEqual(regex_string, {4: "(10(0[3-9]|[1-6][0-9]{1}|7[0-5]))"})
+
+    def test_number_range_and_single_numbers(self):
+        num_string = "1003-1075,35,36"
+        regex_string = card_validator.parse_starting_digits(num_string)
+        self.assertEqual(regex_string, {4: "(10(0[3-9]|[1-6][0-9]{1}|7[0-5]))", 2: "35|36"})
+
+class TestGetNumberLength(unittest.TestCase):
+    def test_single_number(self):
         num_string = "16"
         starting_digit_length = 5
         regex_string = card_validator.get_number_length(num_string, starting_digit_length)
