@@ -54,17 +54,45 @@ def create_number_range(min, max):
 
     return result
 
+def parse_starting_digits(data):
+    result = {}
+
+    for data_item in data.split(","):
+        if "-" in data_item:
+            data_range = data_item.split("-")
+            starting_digit_length = max(len(data_range[0]), len(data_range[1]))
+
+            if starting_digit_length not in result:
+                result[starting_digit_length] = "("
+            else:
+                result[starting_digit_length] += "|("
+            
+            result[starting_digit_length] += create_number_range(data_range[0], data_range[1])
+            result[starting_digit_length] += ")"
+        else:
+            starting_digit_length = len(data_item)
+
+            if starting_digit_length not in result:
+                result[starting_digit_length] = ""
+            else:
+                result[starting_digit_length] += "|"
+            
+            result[starting_digit_length] += str(data_item)
+    
+    return result
 def load_file(file_path):
     result = []
 
     with open(file_path) as file:
         reader = csv.reader(file, delimiter=";")
-        entry = []
-        for line in reader:
-            entry.append(line[0])
-            entry.append(line[1].split(","))
-            entry.append(line[2].split(","))
-        result.append(entry)
+        for issuer, card_lengths, starting_digits in reader:
+            start_digit_regexes = parse_starting_digits(starting_digits)
+            for key in start_digit_regexes:
+                regex_string = "^"
+                regex_string += "({})".format(start_digit_regexes[key])
+                regex_string += get_number_length(card_lengths, key)
+                regex_string += "$"
+                result.append((regex_string, issuer))
 
     return result
 
