@@ -3,7 +3,7 @@ import re
 import os
 
 def create_number_range(min, max):
-    result = ""
+    result = "^"
 
     if min > max:
         min, max = max, min
@@ -16,9 +16,8 @@ def create_number_range(min, max):
     prefix_len = 0
     while min_str[prefix_len] == max_str[prefix_len]:
         prefix_len += 1
-
-    if prefix_len >= 0:
-        result += min_str[:prefix_len]
+    
+    result += min_str[:prefix_len]
     result += "("
 
     for i in reversed(range(prefix_len, len(min_str))):
@@ -27,13 +26,11 @@ def create_number_range(min, max):
             num_search += min_str[prefix_len:i]
             num_search += "[{}-9]".format(min_str[i])
         elif i != prefix_len:
-            num_search += "|"
-            num_search += min_str[prefix_len:i]
+            num_search += "|{}".format(min_str[prefix_len:i])
             num_search += "[{}-9]".format(int(min_str[i]) + 1)
             num_search += "[0-9]{{{}}}".format(len(min_str) - i - 1)
         elif int(min_str[i]) < int(max_str[i]) - 1:
-            num_search += "|"
-            num_search += "[{}-{}]".format(int(min_str[i]) + 1, int(max_str[i]) - 1)
+            num_search += "|[{}-{}]".format(int(min_str[i]) + 1, int(max_str[i]) - 1)
             num_search += "[0-9]{{{}}}".format(len(min_str) - i - 1)
         result += num_search
     
@@ -55,8 +52,6 @@ def create_number_range(min, max):
     result += ")"
 
     return result
-        
-
 
 def load_file(file_path):
     result = []
@@ -75,6 +70,4 @@ def load_file(file_path):
 def validate_number(card_number):
     pass
 
-# print(os.getcwd())
-# print(load_file("credit_card_types.ssv"))
-print(create_number_range(222100, 272099))
+print(create_number_range(0, 9))
