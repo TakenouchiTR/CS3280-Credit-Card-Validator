@@ -133,6 +133,16 @@ def display_card_information(card_number, card_type):
     print("Luhn verification:  {}".format(authenticity))
 
 def validate_number(card_number):
-    pass
+    db = load_file("C:\\Users\\Shawn\\Documents\\School\\CS 3280 Sys Prog\\Project 1\\credit_card_types.ssv")
+    card_type = "Invalid"
+
+    for regex_string, issuer in db:
+        card_regex = re.compile(regex_string)
+        if card_regex.match(card_number):
+            card_type = issuer
+            break
+    
+    display_card_information(card_number, card_type)
+
 
 print(create_number_range(0, 9))
