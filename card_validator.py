@@ -113,6 +113,25 @@ def load_file(file_path):
 
     return result
 
+def luhn_verified(card_number):
+    nums = list(map(lambda char: int(char), card_number))
+    for i in range(0, len(nums) - 1, 2):
+        nums[i] = nums[i] * 2 % 9
+    
+    return sum(nums) % 10 == 0
+
+def display_card_information(card_number, card_type):
+    authenticity = "N/A"
+
+    if card_type == "Invalid":
+        card_number = "Invalid"
+    else:
+        authenticity = luhn_verified(card_number)
+
+    print("Credit card number: {}".format(card_number))
+    print("Credit card type:   {}".format(card_type))
+    print("Luhn verification:  {}".format(authenticity))
+
 def validate_number(card_number):
     pass
 
