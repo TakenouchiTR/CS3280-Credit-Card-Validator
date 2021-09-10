@@ -159,7 +159,7 @@ def parse_prefixes(data):
 
     return result
 
-def get_number_length(data, prefix_length):
+def get_card_number_length(data, prefix_length):
     """
     Creates an uncompiled regular expression string for checking if the correct amount
     of digits exist after the prefix.
@@ -200,7 +200,7 @@ def load_file(file_path):
             for key in start_digit_regexes:
                 regex_string = "^"
                 regex_string += "({})".format(start_digit_regexes[key])
-                regex_string += get_number_length(card_lengths, key)
+                regex_string += get_card_number_length(card_lengths, key)
                 regex_string += "$"
                 result.append((regex_string, issuer))
 
