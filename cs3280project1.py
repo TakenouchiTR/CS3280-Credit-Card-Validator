@@ -127,11 +127,12 @@ def create_number_range(lower, upper):
 
 def parse_prefixes(data):
     """
-    Accepts a string of comma-separated values and parses it into an uncompiled
-    regular expression string.
+    Accepts a string of comma-separated values and parses it into a dictionary of 
+    uncompiled regular expression strings.
     Ranges can be set by having two numbers separated by a hyphen
     Args: data - The string of comma-separated values
-    Returns: An uncompiled regular expression string for checking all prefixes
+    Returns: A dictionary with different prefix lengths as the keys and their uncompiled
+             regular expressions as their values
     """
     result = {}
 
