@@ -4,6 +4,10 @@ import re
 import csv
 import utils
 
+__author__ = "Shawn Carter"
+__version__ = "Fall 2021"
+__pylint__ = "v1.8.3"
+
 INVALID = "invalid"
 
 def format_separated_number(card_number):

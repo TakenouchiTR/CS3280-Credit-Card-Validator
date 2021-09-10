@@ -3,6 +3,10 @@ import unittest
 import re
 import utils
 
+__author__ = "Shawn Carter"
+__version__ = "Fall 2021"
+__pylint__ = "v1.8.3"
+
 class TestCreateNumberRange(unittest.TestCase):
     def test_single_digit_numbers(self):
         number_one = 0
