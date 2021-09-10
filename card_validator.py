@@ -125,8 +125,10 @@ def display_card_information(card_number, card_type):
 
     if card_type == "Invalid":
         card_number = "Invalid"
+    elif luhn_verified(card_number):
+        authenticity = "Authentic."
     else:
-        authenticity = luhn_verified(card_number)
+        authenticity = "Fake."
 
     print("Credit card number: {}".format(card_number))
     print("Credit card type:   {}".format(card_type))
