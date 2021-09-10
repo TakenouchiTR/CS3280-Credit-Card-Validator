@@ -52,31 +52,8 @@ def get_card_number():
     card_number = format_separated_number(card_number)
     return card_number
 
-def create_number_range(lower, upper):
-    """
-    Accepts a minimum and maximum value and creates a string for a regular expression that
-    checks for any number across the range.
-    Args: lower - The minimum value, inclusive
-          upper - the maximum value, inclusive
-    Returns: An uncompiled regular expression string
-    """
+def create_lower_number_range(prefix_len, lower_str, upper_str):
     result = ""
-
-    if lower > upper:
-        lower, upper = upper, lower
-
-    upper_str = str(upper)
-    lower_str = str(lower)
-
-    lower_str = ("0" * (len(upper_str) - len(lower_str))) + lower_str
-
-    prefix_len = 0
-    while lower_str[prefix_len] == upper_str[prefix_len]:
-        prefix_len += 1
-
-    if prefix_len > 0:
-        result += lower_str[:prefix_len]
-        result += "("
 
     for i in reversed(range(prefix_len, len(lower_str))):
         num_search = ""
@@ -91,6 +68,11 @@ def create_number_range(lower, upper):
             num_search += "|[{}-{}]".format(int(lower_str[i]) + 1, int(upper_str[i]) - 1)
             num_search += "[0-9]{{{}}}".format(len(lower_str) - i - 1)
         result += num_search
+    
+    return result
+
+def create_upper_number_range(prefix_len, upper_str):
+    result = ""
 
     for i in range(prefix_len + 1, len(upper_str)):
         num_search = "|"
@@ -106,11 +88,42 @@ def create_number_range(lower, upper):
             num_search += "[0-{}]".format(int(upper_str[i]) - 1)
             num_search += "[0-9]{{{}}}".format(len(upper_str) - i - 1)
             result += num_search
+    
+    return result
+
+def create_number_range(lower, upper):
+    """
+    Accepts a minimum and maximum value and creates a string for a regular expression that
+    checks for any number across the range.
+    Args: lower - The minimum value, inclusive
+          upper - the maximum value, inclusive
+    Returns: An uncompiled regular expression string
+    """
+    range_regex = ""
+
+    if lower > upper:
+        lower, upper = upper, lower
+
+    upper_str = str(upper)
+    lower_str = str(lower)
+
+    lower_str = ("0" * (len(upper_str) - len(lower_str))) + lower_str
+
+    prefix_len = 0
+    while lower_str[prefix_len] == upper_str[prefix_len]:
+        prefix_len += 1
 
     if prefix_len > 0:
-        result += ")"
+        range_regex += lower_str[:prefix_len]
+        range_regex += "("
 
-    return result
+    range_regex += create_lower_number_range(prefix_len, lower_str, upper_str)
+    range_regex += create_upper_number_range(prefix_len, upper_str)
+    
+    if prefix_len > 0:
+        range_regex += ")"
+
+    return range_regex
 
 def parse_prefixes(data):
     """
