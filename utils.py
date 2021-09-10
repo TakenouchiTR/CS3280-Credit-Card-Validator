@@ -18,8 +18,10 @@ def luhn_verified(card_number):
     Returns: True if it passes the Luhn algorithm, otherwise false
     """
     nums = list(map(int, card_number))
-    for i in range(0, len(nums) - 1, 2):
-        nums[i] = nums[i] * 2 % 9
+    for i in range(len(nums) - 2, -1, -2):
+        nums[i] = nums[i] * 2
+        if nums[i] > 9:
+            nums[i] -= 9
 
     return sum(nums) % 10 == 0
 
