@@ -155,16 +155,17 @@ def get_number_length(data, prefix_length):
     """
     result = ""
     data_sections = data.split(",")
+    prev_length = -1
 
-    for i in range(len(data_sections)):
-        length = int(data_sections[i])
-        if i == 0:
+    for data_item in data_sections:
+        length = int(data_item)
+        if prev_length == -1:
             result += r"\d"
             result += "{{{}}}".format(length - prefix_length)
         else:
             result += r"(\d"
-            prev_length = int(data_sections[i - 1])
             result += "{{{}}})?".format(length - prev_length)
+        prev_length = length
 
     return result
 
