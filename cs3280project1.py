@@ -1,7 +1,7 @@
+#!/usr/bin/env python3
 import sys
 import re
 import csv
-
 import utils
 
 INVALID = "invalid"
