@@ -1,8 +1,8 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
 """
 Library file for the first project for CS 3280
 
-Utilities for checking if a credit card number is a valid length, only contains 
+Utilities for checking if a credit card number is a valid length, only contains
 digits, and passes the Luhn algorithm.
 """
 import re
@@ -20,7 +20,7 @@ def luhn_verified(card_number):
     nums = list(map(lambda char: int(char), card_number))
     for i in range(0, len(nums) - 1, 2):
         nums[i] = nums[i] * 2 % 9
-    
+
     return sum(nums) % 10 == 0
 
 def is_valid(card_number):

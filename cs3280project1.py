@@ -28,17 +28,17 @@ def format_separated_number(card_number):
         re.compile(r"^(\d{4})-(\d{4})-(\d{4})-(\d{4})$"),
         re.compile(r"^(\d{4}) (\d{4}) (\d{4}) (\d{4})$")
     ]
-    
+
     for separation_regex in number_separation_regexes:
         if separation_regex.match(card_number):
             card_sections = separation_regex.findall(card_number)
             return "".join(card_sections[0])
-    
+
     return card_number
 
 def get_card_number():
     """
-    Prompts the user for a card number. If a third argument exists, it will be returned 
+    Prompts the user for a card number. If a third argument exists, it will be returned
     as the card number itself.
     Args: None
     Returns: The user-specified card number
@@ -48,63 +48,63 @@ def get_card_number():
         card_number = sys.argv[2]
     else:
         card_number = input("Please enter a credit card number:\n")
-    
+
     card_number = format_separated_number(card_number)
     return card_number
 
-def create_number_range(min, max):
+def create_number_range(lower, upper):
     """
-    Accepts a minimum and maximum value and creates a string for a regular expression that 
+    Accepts a minimum and maximum value and creates a string for a regular expression that
     checks for any number across the range.
-    Args: min - The minimum value, inclusive
-          max - the maximum value, inclusive
+    Args: lower - The minimum value, inclusive
+          upper - the maximum value, inclusive
     Returns: An uncompiled regular expression string
     """
     result = ""
 
-    if min > max:
-        min, max = max, min
-    
-    max_str = str(max)
-    min_str = str(min)
+    if lower > upper:
+        lower, upper = upper, lower
 
-    min_str = ("0" * (len(max_str) - len(min_str))) + min_str
+    lower_str = str(upper)
+    upper_str = str(lower)
+
+    upper_str = ("0" * (len(lower_str) - len(upper_str))) + upper_str
 
     prefix_len = 0
-    while min_str[prefix_len] == max_str[prefix_len]:
+    while upper_str[prefix_len] == lower_str[prefix_len]:
         prefix_len += 1
-    
+
     if prefix_len > 0:
-        result += min_str[:prefix_len]
+        result += upper_str[:prefix_len]
         result += "("
 
-    for i in reversed(range(prefix_len, len(min_str))):
+    for i in reversed(range(prefix_len, len(upper_str))):
         num_search = ""
-        if i == len(min_str) - 1:
-            num_search += min_str[prefix_len:i]
-            num_search += "[{}-9]".format(min_str[i])
+        if i == len(upper_str) - 1:
+            num_search += upper_str[prefix_len:i]
+            num_search += "[{}-9]".format(upper_str[i])
         elif i != prefix_len:
-            num_search += "|{}".format(min_str[prefix_len:i])
-            num_search += "[{}-9]".format(int(min_str[i]) + 1)
-            num_search += "[0-9]{{{}}}".format(len(min_str) - i - 1)
-        elif int(min_str[i]) < int(max_str[i]) - 1:
-            num_search += "|[{}-{}]".format(int(min_str[i]) + 1, int(max_str[i]) - 1)
-            num_search += "[0-9]{{{}}}".format(len(min_str) - i - 1)
+            num_search += "|{}".format(upper_str[prefix_len:i])
+            num_search += "[{}-9]".format(int(upper_str[i]) + 1)
+            num_search += "[0-9]{{{}}}".format(len(upper_str) - i - 1)
+        elif int(upper_str[i]) < int(lower_str[i]) - 1:
+            num_search += "|[{}-{}]".format(int(upper_str[i]) + 1, int(lower_str[i]) - 1)
+            num_search += "[0-9]{{{}}}".format(len(upper_str) - i - 1)
         result += num_search
-    
-    for i in range(prefix_len + 1, len(max_str)):
+
+    for i in range(prefix_len + 1, len(lower_str)):
         num_search = "|"
-        if i == len(max_str) - 1:
-            if max_str[i] == '0':
-                num_search += max_str[prefix_len:]
+        if i == len(lower_str) - 1:
+            if lower_str[i] == '0':
+                num_search += lower_str[prefix_len:]
             else:
-                num_search += max_str[prefix_len:i]
-                num_search += "[0-{}]".format(int(max_str[i]))
+                num_search += lower_str[prefix_len:i]
+                num_search += "[0-{}]".format(int(lower_str[i]))
             result += num_search
-        elif max_str[i] != "0":
-            num_search += max_str[prefix_len:i]
-            num_search += "[0-{}]".format(int(max_str[i]) - 1)
-            num_search += "[0-9]{{{}}}".format(len(max_str) - i - 1)
+        elif lower_str[i] != "0":
+            num_search += lower_str[prefix_len:i]
+            num_search += "[0-{}]".format(int(lower_str[i]) - 1)
+            num_search += "[0-9]{{{}}}".format(len(lower_str) - i - 1)
             result += num_search
 
     if prefix_len > 0:
@@ -114,7 +114,7 @@ def create_number_range(min, max):
 
 def parse_prefixes(data):
     """
-    Accepts a string of comma-separated values and parses it into an uncompiled 
+    Accepts a string of comma-separated values and parses it into an uncompiled
     regular expression string.
     Ranges can be set by having two numbers separated by a hyphen
     Args: data - The string of comma-separated values
@@ -131,7 +131,7 @@ def parse_prefixes(data):
                 result[starting_digit_length] = "("
             else:
                 result[starting_digit_length] += "|("
-            
+
             result[starting_digit_length] += create_number_range(data_range[0], data_range[1])
             result[starting_digit_length] += ")"
         else:
@@ -141,11 +141,11 @@ def parse_prefixes(data):
                 result[starting_digit_length] = ""
             else:
                 result[starting_digit_length] += "|"
-            
+
             result[starting_digit_length] += str(data_item)
-    
+
     return result
-        
+
 def get_number_length(data, prefix_length):
     """
     Creates an uncompiled regular expression string for checking if the correct amount
@@ -170,12 +170,12 @@ def get_number_length(data, prefix_length):
 
 def load_file(file_path):
     """
-    Loads a semicolon-separed value file of credit card information and turns it into a list of valuue-pairs.
-    The first value is an uncompiled regular expression.
+    Loads a semicolon-separed value file of credit card information and turns it into a list of 
+    value-pairs. The first value is an uncompiled regular expression.
     The second value is the issuer associated with the regular expression.
     Args: file_path - The path to the semicolon-separated value file
-    Returns: A list of value-pairs representing card issuers and an uncompiled regular expression for 
-             their valid numbers
+    Returns: A list of value-pairs representing card issuers and an uncompiled regular expression 
+             for their valid numbers
     """
     result = []
 
@@ -217,7 +217,7 @@ def display_card_information(card_number, issuer):
 def get_card_issuer(card_number, issuer_db):
     """
     Compares a card number against a list of regular expressions. If the
-    number matches a regular expression, it will return the issuer associated 
+    number matches a regular expression, it will return the issuer associated
     with it. If there are no matches, INVALID will be returned.
     Args: card_number - The card number to check
           issuer_db - The value-pairs representing issuers and their associated
@@ -228,7 +228,7 @@ def get_card_issuer(card_number, issuer_db):
         card_regex = re.compile(regex_string)
         if card_regex.match(card_number):
             return issuer
-    
+
     return INVALID
 
 def main():
@@ -244,7 +244,7 @@ def main():
     if len(sys.argv) == 1:
         print("Missing data file path")
         exit()
-    
+
     file_path = sys.argv[1]
     card_number = get_card_number()
 

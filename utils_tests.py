@@ -1,4 +1,4 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
 import unittest
 import utils
 
@@ -15,4 +15,3 @@ class TestLuhnVerified(unittest.TestCase):
     def test_valid_number(self):
         number = "345687098585381"
         self.assertTrue(utils.luhn_verified(number))
-    
