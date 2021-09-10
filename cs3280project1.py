@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+"""
+The first project for CS 3280
+
+This script accepts a credit card number from the user, then displays
+who issued the card and whether or not the card number is valid.
+"""
 import sys
 import re
 import csv
@@ -11,6 +17,13 @@ __pylint__ = "v1.8.3"
 INVALID = "invalid"
 
 def format_separated_number(card_number):
+    """
+    Checks if the card number is a 16-digit long number separated by spaces or hyphens.
+    If the number is made of four groups of four digits, the separators are removed.
+    Args: card_number - The specified card number
+    Returns: card_number without the separators if it matches the specified pattern, otherwise
+             card_number is returned unaltered
+    """
     number_separation_regexes = [
         re.compile(r"^(\d{4})-(\d{4})-(\d{4})-(\d{4})$"),
         re.compile(r"^(\d{4}) (\d{4}) (\d{4}) (\d{4})$")
@@ -24,6 +37,12 @@ def format_separated_number(card_number):
     return card_number
 
 def get_card_number():
+    """
+    Prompts the user for a card number. If a third argument exists, it will be returned 
+    as the card number itself.
+    Args: None
+    Returns: The user-specified card number
+    """
     card_number = ""
     if len(sys.argv) == 3:
         card_number = sys.argv[2]
@@ -34,6 +53,13 @@ def get_card_number():
     return card_number
 
 def create_number_range(min, max):
+    """
+    Accepts a minimum and maximum value and creates a string for a regular expression that 
+    checks for any number across the range.
+    Args: min - The minimum value, inclusive
+          max - the maximum value, inclusive
+    Returns: An uncompiled regular expression string
+    """
     result = ""
 
     if min > max:
@@ -86,7 +112,14 @@ def create_number_range(min, max):
 
     return result
 
-def parse_starting_digits(data):
+def parse_prefixes(data):
+    """
+    Accepts a string of comma-separated values and parses it into an uncompiled 
+    regular expression string.
+    Ranges can be set by having two numbers separated by a hyphen
+    Args: data - The string of comma-separated values
+    Returns: An uncompiled regular expression string for checking all prefixes
+    """
     result = {}
 
     for data_item in data.split(","):
@@ -113,7 +146,13 @@ def parse_starting_digits(data):
     
     return result
         
-def get_number_length(data, starting_digit_length):
+def get_number_length(data, prefix_length):
+    """
+    Creates an uncompiled regular expression string for checking if the correct amount
+    of digits exist after the prefix.
+    Args: data - The string of comma-separated values representing the valid card lengths
+    Returns: An uncompiled regular expression string for checking valid card lengths
+    """
     result = ""
     data_sections = data.split(",")
 
@@ -121,7 +160,7 @@ def get_number_length(data, starting_digit_length):
         length = int(data_sections[i])
         if i == 0:
             result += r"\d"
-            result += "{{{}}}".format(length - starting_digit_length)
+            result += "{{{}}}".format(length - prefix_length)
         else:
             result += r"(\d"
             prev_length = int(data_sections[i - 1])
@@ -130,12 +169,20 @@ def get_number_length(data, starting_digit_length):
     return result
 
 def load_file(file_path):
+    """
+    Loads a semicolon-separed value file of credit card information and turns it into a list of valuue-pairs.
+    The first value is an uncompiled regular expression.
+    The second value is the issuer associated with the regular expression.
+    Args: file_path - The path to the semicolon-separated value file
+    Returns: A list of value-pairs representing card issuers and an uncompiled regular expression for 
+             their valid numbers
+    """
     result = []
 
     with open(file_path) as file:
         reader = csv.reader(file, delimiter=";")
         for issuer, card_lengths, starting_digits in reader:
-            start_digit_regexes = parse_starting_digits(starting_digits)
+            start_digit_regexes = parse_prefixes(starting_digits)
             for key in start_digit_regexes:
                 regex_string = "^"
                 regex_string += "({})".format(start_digit_regexes[key])
@@ -145,21 +192,38 @@ def load_file(file_path):
 
     return result
 
-def display_card_information(card_number, card_type):
+def display_card_information(card_number, issuer):
+    """
+    Displays information about a credit card, including the card number, issuer, and
+    whether it passes the Luhn algorithm. If issuer == INVALID, then the card number
+    will be displayed as INVALID and it will not be checked for authenticity.
+    Args: card_number - The card number
+          issuer - The issuuer for the card
+    Returns: None
+    """
     authenticity = "N/A"
 
-    if card_type == "Invalid":
-        card_number = "Invalid"
+    if issuer == INVALID:
+        card_number = INVALID
     elif utils.luhn_verified(card_number):
         authenticity = "Authentic."
     else:
         authenticity = "Fake."
 
     print("Credit card number: {}".format(card_number))
-    print("Credit card type:   {}".format(card_type))
+    print("Credit card type:   {}".format(issuer))
     print("Luhn verification:  {}".format(authenticity))
 
 def get_card_issuer(card_number, issuer_db):
+    """
+    Compares a card number against a list of regular expressions. If the
+    number matches a regular expression, it will return the issuer associated 
+    with it. If there are no matches, INVALID will be returned.
+    Args: card_number - The card number to check
+          issuer_db - The value-pairs representing issuers and their associated
+                      regular expressions
+    Returns: The name of the card issuer if a match is found, otherwise INVALID
+    """
     for regex_string, issuer in issuer_db:
         card_regex = re.compile(regex_string)
         if card_regex.match(card_number):
@@ -168,6 +232,11 @@ def get_card_issuer(card_number, issuer_db):
     return INVALID
 
 def main():
+    """
+    The main entry point for the script.
+    Args: None
+    Returns: None
+    """
     file_path = ""
     card_number = ""
     issuer = INVALID
