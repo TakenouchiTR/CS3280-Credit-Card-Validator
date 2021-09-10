@@ -134,9 +134,24 @@ def display_card_information(card_number, card_type):
     print("Credit card type:   {}".format(card_type))
     print("Luhn verification:  {}".format(authenticity))
 
+def format_separated_number(card_number):
+    number_separation_regexes = [
+        re.compile(r"^(\d{4})-(\d{4})-(\d{4})-(\d{4})$"),
+        re.compile(r"^(\d{4}) (\d{4}) (\d{4}) (\d{4})$")
+    ]
+    
+    for separation_regex in number_separation_regexes:
+        if separation_regex.match(card_number):
+            card_sections = separation_regex.findall(card_number)
+            return "".join(card_sections[0])
+    
+    return card_number
+
 def validate_number(card_number):
     db = load_file("C:\\Users\\Shawn\\Documents\\School\\CS 3280 Sys Prog\\Project 1\\credit_card_types.ssv")
     card_type = "Invalid"
+
+    card_number = format_separated_number(card_number)
 
     for regex_string, issuer in db:
         card_regex = re.compile(regex_string)
