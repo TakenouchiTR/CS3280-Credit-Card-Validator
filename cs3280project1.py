@@ -65,46 +65,46 @@ def create_number_range(lower, upper):
     if lower > upper:
         lower, upper = upper, lower
 
-    lower_str = str(upper)
-    upper_str = str(lower)
+    upper_str = str(upper)
+    lower_str = str(lower)
 
-    upper_str = ("0" * (len(lower_str) - len(upper_str))) + upper_str
+    lower_str = ("0" * (len(upper_str) - len(lower_str))) + lower_str
 
     prefix_len = 0
-    while upper_str[prefix_len] == lower_str[prefix_len]:
+    while lower_str[prefix_len] == upper_str[prefix_len]:
         prefix_len += 1
 
     if prefix_len > 0:
-        result += upper_str[:prefix_len]
+        result += lower_str[:prefix_len]
         result += "("
 
-    for i in reversed(range(prefix_len, len(upper_str))):
+    for i in reversed(range(prefix_len, len(lower_str))):
         num_search = ""
-        if i == len(upper_str) - 1:
-            num_search += upper_str[prefix_len:i]
-            num_search += "[{}-9]".format(upper_str[i])
+        if i == len(lower_str) - 1:
+            num_search += lower_str[prefix_len:i]
+            num_search += "[{}-9]".format(lower_str[i])
         elif i != prefix_len:
-            num_search += "|{}".format(upper_str[prefix_len:i])
-            num_search += "[{}-9]".format(int(upper_str[i]) + 1)
-            num_search += "[0-9]{{{}}}".format(len(upper_str) - i - 1)
-        elif int(upper_str[i]) < int(lower_str[i]) - 1:
-            num_search += "|[{}-{}]".format(int(upper_str[i]) + 1, int(lower_str[i]) - 1)
-            num_search += "[0-9]{{{}}}".format(len(upper_str) - i - 1)
+            num_search += "|{}".format(lower_str[prefix_len:i])
+            num_search += "[{}-9]".format(int(lower_str[i]) + 1)
+            num_search += "[0-9]{{{}}}".format(len(lower_str) - i - 1)
+        elif int(lower_str[i]) < int(upper_str[i]) - 1:
+            num_search += "|[{}-{}]".format(int(lower_str[i]) + 1, int(upper_str[i]) - 1)
+            num_search += "[0-9]{{{}}}".format(len(lower_str) - i - 1)
         result += num_search
 
-    for i in range(prefix_len + 1, len(lower_str)):
+    for i in range(prefix_len + 1, len(upper_str)):
         num_search = "|"
-        if i == len(lower_str) - 1:
-            if lower_str[i] == '0':
-                num_search += lower_str[prefix_len:]
+        if i == len(upper_str) - 1:
+            if upper_str[i] == '0':
+                num_search += upper_str[prefix_len:]
             else:
-                num_search += lower_str[prefix_len:i]
-                num_search += "[0-{}]".format(int(lower_str[i]))
+                num_search += upper_str[prefix_len:i]
+                num_search += "[0-{}]".format(int(upper_str[i]))
             result += num_search
-        elif lower_str[i] != "0":
-            num_search += lower_str[prefix_len:i]
-            num_search += "[0-{}]".format(int(lower_str[i]) - 1)
-            num_search += "[0-9]{{{}}}".format(len(lower_str) - i - 1)
+        elif upper_str[i] != "0":
+            num_search += upper_str[prefix_len:i]
+            num_search += "[0-{}]".format(int(upper_str[i]) - 1)
+            num_search += "[0-9]{{{}}}".format(len(upper_str) - i - 1)
             result += num_search
 
     if prefix_len > 0:
