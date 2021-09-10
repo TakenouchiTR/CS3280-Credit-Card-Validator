@@ -162,4 +162,4 @@ def validate_number(card_number):
     display_card_information(card_number, card_type)
 
 
-print(create_number_range(0, 9))
+validate_number("5275 1900 0427 8764")
