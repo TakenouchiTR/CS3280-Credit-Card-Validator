@@ -53,6 +53,14 @@ def get_card_number():
     return card_number
 
 def create_lower_number_range(prefix_len, lower_str, upper_str):
+    """
+    Helper function for the create_number_range() function.
+    Creates the lower half of the number range regular expression
+    Args: prefix_len - The length of the prefix
+          lower_str - The lower bound for the range, as a string
+          upper_str - The upper bound for the range, as a string
+    Returns: The upper half of the number range regular expression
+    """
     result = ""
 
     for i in reversed(range(prefix_len, len(lower_str))):
@@ -68,10 +76,17 @@ def create_lower_number_range(prefix_len, lower_str, upper_str):
             num_search += "|[{}-{}]".format(int(lower_str[i]) + 1, int(upper_str[i]) - 1)
             num_search += "[0-9]{{{}}}".format(len(lower_str) - i - 1)
         result += num_search
-    
+
     return result
 
 def create_upper_number_range(prefix_len, upper_str):
+    """
+    Helper function for the create_number_range() function.
+    Creates the upper half of the number range regular expression.
+    Args: prefix_len - The length of the prefix
+          upper_str - The upper bound for the range, as a string
+    Returns: The upper half of the number range regular expression
+    """
     result = ""
 
     for i in range(prefix_len + 1, len(upper_str)):
@@ -88,7 +103,7 @@ def create_upper_number_range(prefix_len, upper_str):
             num_search += "[0-{}]".format(int(upper_str[i]) - 1)
             num_search += "[0-9]{{{}}}".format(len(upper_str) - i - 1)
             result += num_search
-    
+
     return result
 
 def create_number_range(lower, upper):
@@ -119,7 +134,7 @@ def create_number_range(lower, upper):
 
     range_regex += create_lower_number_range(prefix_len, lower_str, upper_str)
     range_regex += create_upper_number_range(prefix_len, upper_str)
-    
+
     if prefix_len > 0:
         range_regex += ")"
 
@@ -127,7 +142,7 @@ def create_number_range(lower, upper):
 
 def parse_prefixes(data):
     """
-    Accepts a string of comma-separated values and parses it into a dictionary of 
+    Accepts a string of comma-separated values and parses it into a dictionary of
     uncompiled regular expression strings.
     Ranges can be set by having two numbers separated by a hyphen
     Args: data - The string of comma-separated values
