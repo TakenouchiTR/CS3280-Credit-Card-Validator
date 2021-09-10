@@ -171,11 +171,11 @@ def get_number_length(data, prefix_length):
 
 def load_file(file_path):
     """
-    Loads a semicolon-separed value file of credit card information and turns it into a list of 
+    Loads a semicolon-separed value file of credit card information and turns it into a list of
     value-pairs. The first value is an uncompiled regular expression.
     The second value is the issuer associated with the regular expression.
     Args: file_path - The path to the semicolon-separated value file
-    Returns: A list of value-pairs representing card issuers and an uncompiled regular expression 
+    Returns: A list of value-pairs representing card issuers and an uncompiled regular expression
              for their valid numbers
     """
     result = []
