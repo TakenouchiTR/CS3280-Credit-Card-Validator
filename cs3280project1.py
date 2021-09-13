@@ -277,10 +277,11 @@ def main():
 
     file_path = sys.argv[1]
     card_number = get_card_number()
+    formatted_card_number = format_separated_number(card_number)
 
-    if utils.is_valid(card_number):
+    if utils.is_valid(formatted_card_number):
         issuer_db = load_file(file_path)
-        issuer = get_card_issuer(card_number, issuer_db)
+        issuer = get_card_issuer(formatted_card_number, issuer_db)
 
     display_card_information(card_number, issuer)
 
