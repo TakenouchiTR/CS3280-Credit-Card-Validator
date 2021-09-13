@@ -242,10 +242,11 @@ def display_card_information(card_number, issuer):
     Returns: None
     """
     authenticity = "N/A"
+    formatted_card_number = format_separated_number(card_number)
 
     if issuer == INVALID:
         card_number = INVALID
-    elif utils.luhn_verified(card_number):
+    elif utils.luhn_verified(formatted_card_number):
         authenticity = "Authentic."
     else:
         authenticity = "Fake."
