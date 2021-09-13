@@ -52,6 +52,19 @@ def get_card_number():
     card_number = format_separated_number(card_number)
     return card_number
 
+def get_range_prefix_length(lower_str, upper_str):
+    """
+    Gets the number of contiguous matching characters at the start of the upper bound 
+    and lower bound strings
+    Args: lower_str - The string representation of the lower bound
+          upper_str - the string representation of the upper bound
+    Returns: The number of contiguous matching characters
+    """
+    prefix_len = 0
+    while lower_str[prefix_len] == upper_str[prefix_len]:
+        prefix_len += 1
+    return prefix_len
+
 def create_lower_number_range(prefix_len, lower_str, upper_str):
     """
     Helper function for the create_number_range() function.
@@ -124,9 +137,7 @@ def create_number_range(lower, upper):
 
     lower_str = ("0" * (len(upper_str) - len(lower_str))) + lower_str
 
-    prefix_len = 0
-    while lower_str[prefix_len] == upper_str[prefix_len]:
-        prefix_len += 1
+    prefix_len = get_range_prefix_length(lower_str, upper_str)
 
     if prefix_len > 0:
         range_regex += lower_str[:prefix_len]
