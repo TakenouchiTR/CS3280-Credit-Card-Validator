@@ -134,7 +134,7 @@ def create_number_range(lower, upper):
     upper_str = str(upper)
     lower_str = str(lower)
 
-    lower_str = ("0" * (len(upper_str) - len(lower_str))) + lower_str
+    lower_str = lower_str.zfill(len(upper_str) - len(lower_str))
 
     prefix_len = get_range_prefix_length(lower_str, upper_str)
 
