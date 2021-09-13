@@ -49,7 +49,6 @@ def get_card_number():
     else:
         card_number = input("Please enter a credit card number:\n")
 
-    card_number = format_separated_number(card_number)
     return card_number
 
 def get_range_prefix_length(lower_str, upper_str):
