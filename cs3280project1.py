@@ -39,7 +39,7 @@ def format_separated_number(card_number):
 def get_card_number():
     """
     Prompts the user for a card number. If a third argument exists, it will be returned
-    as the card number itself.
+    as the card number.
     Args: None
     Returns: The user-specified card number
     """
