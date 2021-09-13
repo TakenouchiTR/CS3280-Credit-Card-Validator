@@ -29,7 +29,18 @@ def is_valid(card_number):
     """
     Checks if a card is the correct length and only contains digits.
     Args: card_number - The specified card number to check
-    Returns: True if it is between 13 and 16 digits long, otherwise false
+    Returns: True if it is between 13 and 19 digits long or is 16
+             digits separated by dashes or spaces into four groups
+             of four, otherwise false
     """
-    check_regex = re.compile(r'^\d{13,16}$')
-    return check_regex.match(card_number) != None
+    valid_patterns = [
+        r'^\d{13,19}$',
+        r'^\d{4}-\d{4}-\d{4}-\d{4}$',
+        r'^\d{4} \d{4} \d{4} \d{4}$',
+    ]
+
+    for pattern in valid_patterns:
+        regex = re.compile(pattern)
+        if regex.match(card_number) != None:
+            return True
+    return False
